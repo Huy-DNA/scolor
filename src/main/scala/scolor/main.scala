@@ -8,8 +8,14 @@ import com.raquo.laminar.api.L.{*, given}
 
 @main
 def Scolor(): Unit =
-  dom.document.querySelector("#app").innerHTML = s"""
-    <div>
-    </div>
-  """
+  renderOnDomContentLoaded(
+    dom.document.getElementById("app"),
+    Main.appElement()
+  )
 end Scolor
+
+object Main:
+  def appElement(): Element =
+    div()
+  end appElement
+end Main
