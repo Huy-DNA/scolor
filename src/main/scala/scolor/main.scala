@@ -6,6 +6,8 @@ import scala.scalajs.js.annotation.*
 import org.scalajs.dom
 import com.raquo.laminar.api.L.{*, given}
 
+import scolor.screens.Home.*
+
 @main
 def Scolor(): Unit =
   renderOnDomContentLoaded(
@@ -16,6 +18,6 @@ end Scolor
 
 object Main:
   def appElement(): Element =
-    div()
+    Home.pageElement()
   end appElement
 end Main
