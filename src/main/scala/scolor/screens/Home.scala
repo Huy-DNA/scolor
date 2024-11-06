@@ -7,7 +7,7 @@ import org.scalajs.dom
 import com.raquo.laminar.api.L.{*, given}
 
 object Home:
-  def pageElement(): Element =
+  def pageElement(maybeLevelStream: EventStream[Option[Int]]): Element =
     div(
       cls := "flex items-center justify-center min-h-[100vh] bg-gradient-to-bl from-violet-500 to-fuchsia-800",
       div(

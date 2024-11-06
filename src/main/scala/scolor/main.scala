@@ -21,8 +21,8 @@ object Main:
   def currentPage(maybeLevelStream: EventStream[Option[Int]]): Signal[Element] =
     val maybeLevel = maybeLevelStream.startWith(None)
     maybeLevel.map {
-      case None => Home.pageElement()
-      case Some(level) => Level.pageElement(level)
+      case None => Home.pageElement(maybeLevelStream)
+      case Some(level) => Level.pageElement(level, maybeLevelStream)
     }
   def appElement(): Element =
     val maybeLevelStream = EventStream.fromValue(None)

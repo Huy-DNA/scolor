@@ -7,7 +7,7 @@ import org.scalajs.dom
 import com.raquo.laminar.api.L.{*, given}
 
 object Level:
-  def pageElement(level: Int): Element =
+  def pageElement(level: Int, maybeLevelStream: EventStream[Option[Int]]): Element =
     div()
   end pageElement
 end Level
