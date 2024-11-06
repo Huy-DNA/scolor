@@ -7,6 +7,7 @@ import org.scalajs.dom
 import com.raquo.laminar.api.L.{*, given}
 
 import scolor.screens.Home.*
+import scolor.screens.Level.*
 
 @main
 def Scolor(): Unit =
