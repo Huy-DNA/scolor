@@ -24,7 +24,21 @@ object Level:
   end colorPreview
 
   def colorPick(level: Int, h: Int, s: Int, l: Int, maybeLevelBus: EventBus[Option[Int]]): Element =
-    div()
+    div(
+      cls := "flex items-center justify-center min-h-[100vh] bg-gradient-to-bl from-violet-500 to-fuchsia-800",
+      div(
+        p(
+          cls := "text-[25px] mb-4 text-white",
+          "Pick the color",
+        ),
+        div(
+          cls := "flex items-center justify-center",
+          input(
+            typ := "color",
+          ),
+        ),
+      ),
+    )
   end colorPick
 
   def pageElement(level: Int, maybeLevelBus: EventBus[Option[Int]]): Element =
