@@ -25,6 +25,8 @@ object Main:
       case None => Home.pageElement(maybeLevelBus)
       case Some(level) => Level.pageElement(level, maybeLevelBus)
     }
+  end currentPage
+
   def appElement(): Element =
     val maybeLevelBus = new EventBus[Option[Int]]
     div(child <-- Main.currentPage(maybeLevelBus))
