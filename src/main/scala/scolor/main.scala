@@ -18,7 +18,14 @@ def Scolor(): Unit =
 end Scolor
 
 object Main:
+  def currentPage(maybeLevel: Signal[Option[Int]]): Signal[Element] =
+    maybeLevel.map {
+      case None => Home.pageElement()
+      case Some(level) => Level.pageElement(level)
+    }
   def appElement(): Element =
-    Home.pageElement()
+    val maybeLevelStream = EventStream.fromValue(None)
+    val maybeLevel = maybeLevelStream.startWith(None)
+    div(child <-- Main.currentPage(maybeLevel))
   end appElement
 end Main
