@@ -19,23 +19,36 @@ object Level:
         case None => ""
         case Some(_) => span(
           cls := "text-white text-[50px]",
-          "?"
+          "?",
         )
       },
     )
   end previewPane
 
   def pickPane(playerEventBus: EventBus[Option[Float]]): Element =
+    val delaySignal = EventStream.delay(4000).map(_ => Some(())).startWith(None)
+    var sec = 4
+    val periodicSignal = EventStream.periodic(1000).map(_ => {
+      sec = sec - 1
+      sec + 1
+    })
     div(
-      cls := "bg-white drop-shadow-lg h-[100%]",
+      backgroundColor := "#555555",
+      cls := "bg-white drop-shadow-lg h-[100%] flex items-center justify-center",
+      child <-- periodicSignal.map(sec => 
+        span(
+          cls := "text-white text-[50px]",
+          if sec > 0 then s"$sec" else "",
+        )
+      )
     )
   end pickPane
 
   def pageElement(level: Int, maybeLevelBus: EventBus[Option[Int]]): Element =
     val rand = new scala.util.Random
-    val h = rand.nextInt(361)
+    val h = rand.nextInt(301) + 20
     val s = rand.nextInt(71) + 30
-    val l = rand.nextInt(91) + 10
+    val l = rand.nextInt(61) + 30
     val acc = rand.nextInt(35) + 40
     val playerAccuracyBus = new EventBus[Option[Float]]
     val playerAccuracySignal = playerAccuracyBus.events.startWith(None)
