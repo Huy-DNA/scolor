@@ -14,7 +14,7 @@ object Level:
     )
   end previewPane
 
-  def pickPane(): Element =
+  def pickPane(playerEventBus: EventBus[Option[Float]]): Element =
     div(
       cls := "bg-white drop-shadow-lg h-[100%]",
     )
@@ -23,10 +23,11 @@ object Level:
   def pageElement(level: Int, maybeLevelBus: EventBus[Option[Int]]): Element =
     val rand = new scala.util.Random
     val h = rand.nextInt(361)
-    val s = rand.nextInt(101)
-    val l = rand.nextInt(101)
+    val s = rand.nextInt(71) + 30
+    val l = rand.nextInt(91) + 10
     val acc = rand.nextInt(35) + 40
     val delaySignal = EventStream.delay(4000).map(_ => Some(())).startWith(None)
+    val playerAccuracyBus = new EventBus[Option[Float]]
     div(
       cls := "min-w-[100vw] min-h-[100vh] bg-gradient-to-r from-cyan-600 to-blue-500 p-16",
       div(
@@ -51,7 +52,7 @@ object Level:
               cls := "text-white text-right text-[15px] mb-2",
               s"Your accuracy: ??%",
             ),
-            Level.pickPane(),
+            Level.pickPane(playerAccuracyBus),
           ),
         ),
       ),
