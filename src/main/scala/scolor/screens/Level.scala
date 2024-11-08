@@ -44,7 +44,12 @@ object Level:
           cls := "text-white",
           if sec > 0 then s"$sec" else "Pick a color!",
         )
-      )
+      ),
+      input(
+        cls := "absolute opacity-0",
+        typ := "color",
+        disabled <-- delaySignal.map(_.isEmpty),
+      ),
     )
   end pickPane
 
