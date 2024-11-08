@@ -8,9 +8,20 @@ import com.raquo.laminar.api.L.{*, given}
 
 object Level:
   def previewPane(h: Int, s: Int, l: Int): Element =
+    val delaySignal = EventStream.delay(4000).map(_ => Some(())).startWith(None)
     div(
-      backgroundColor := s"hsl($h, $s%, $l%)",
-      cls := "bg-white drop-shadow-lg h-[100%]",
+      backgroundColor <-- delaySignal.map {
+        case None => s"hsl($h, $s%, $l%)"
+        case Some(_) => "#555555"
+      },
+      cls := "bg-white drop-shadow-lg h-[100%] flex items-center justify-center",
+      child <-- delaySignal.map {
+        case None => ""
+        case Some(_) => span(
+          cls := "text-white text-[50px]",
+          "?"
+        )
+      },
     )
   end previewPane
 
@@ -26,7 +37,6 @@ object Level:
     val s = rand.nextInt(71) + 30
     val l = rand.nextInt(91) + 10
     val acc = rand.nextInt(35) + 40
-    val delaySignal = EventStream.delay(4000).map(_ => Some(())).startWith(None)
     val playerAccuracyBus = new EventBus[Option[Float]]
     val playerAccuracySignal = playerAccuracyBus.events.startWith(None)
     div(
