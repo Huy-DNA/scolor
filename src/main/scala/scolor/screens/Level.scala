@@ -28,6 +28,7 @@ object Level:
     val acc = rand.nextInt(35) + 40
     val delaySignal = EventStream.delay(4000).map(_ => Some(())).startWith(None)
     val playerAccuracyBus = new EventBus[Option[Float]]
+    val playerAccuracySignal = playerAccuracyBus.events.startWith(None)
     div(
       cls := "min-w-[100vw] min-h-[100vh] bg-gradient-to-r from-cyan-600 to-blue-500 p-16",
       div(
@@ -50,7 +51,13 @@ object Level:
             cls := "flex-1",
             p(
               cls := "text-white text-right text-[15px] mb-2",
-              s"Your accuracy: ??%",
+              span(
+                text <-- playerAccuracySignal.map(
+                  maybeAccuracy => maybeAccuracy match
+                    case None => s"Your accuracy: ???%"
+                    case Some(acc) => s"Your accuracy: $acc%"
+                ),
+              ),
             ),
             Level.pickPane(playerAccuracyBus),
           ),
