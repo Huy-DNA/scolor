@@ -39,6 +39,9 @@ object Level:
         case None => "text-[50px]"
         case Some(_) => "text-[20px] cursor-pointer"
       },
+      onClick --> Observer(
+        onNext = _ => dom.document.querySelector(".color-picker").asInstanceOf[dom.html.Element].click()
+      ),
       child <-- periodicSignal.map(sec => 
         span(
           cls := "text-white",
@@ -47,6 +50,7 @@ object Level:
       ),
       input(
         cls := "absolute opacity-0",
+        cls := "color-picker",
         typ := "color",
         disabled <-- delaySignal.map(_.isEmpty),
       ),
