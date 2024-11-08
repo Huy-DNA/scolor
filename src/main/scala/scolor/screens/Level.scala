@@ -35,10 +35,14 @@ object Level:
     div(
       backgroundColor := "#555555",
       cls := "bg-white drop-shadow-lg h-[100%] flex items-center justify-center",
+      cls <-- delaySignal.map {
+        case None => "text-[50px]"
+        case Some(_) => "text-[20px] cursor-pointer"
+      },
       child <-- periodicSignal.map(sec => 
         span(
-          cls := "text-white text-[50px]",
-          if sec > 0 then s"$sec" else "",
+          cls := "text-white",
+          if sec > 0 then s"$sec" else "Pick a color!",
         )
       )
     )
