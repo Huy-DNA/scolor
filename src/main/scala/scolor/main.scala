@@ -20,6 +20,8 @@ end Scolor
 
 object Main:
   def appElement(): Element =
+    given owner: Owner = new Owner{}
+
     val maybeLevelBus = new EventBus[Option[Int]]
     val maybeLevel = maybeLevelBus.events.startWith(None)
     
@@ -28,14 +30,14 @@ object Main:
         val enterGameBus = new EventBus[Option[Unit]]
         enterGameBus.events.addObserver(Observer(
           onNext = _ => maybeLevelBus.writer.onNext(Some(1))
-        ))(new Owner{})
+        ))
         Home.pageElement(enterGameBus)
       }
       case Some(level) => {
         val nextLevelBus = new EventBus[Unit]
         nextLevelBus.events.addObserver(Observer(
           onNext = _ => maybeLevelBus.writer.onNext(Some(level + 1))
-        ))(new Owner{})
+        ))
 
         Level.pageElement(level, nextLevelBus)
       }
