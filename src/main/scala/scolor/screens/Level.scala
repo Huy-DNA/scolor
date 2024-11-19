@@ -16,7 +16,7 @@ object Level:
 
   def pageElement(level: Int, nextLevelBus: EventBus[Unit]): Element =
     val previewColor = Color.HSL(Random.nextDouble(), Random.nextDouble, Random.nextDouble)
-    val acc = Random.nextInt(35) + 40
+    val requiredAcc = Random.nextInt(35) + 40
     val pickedColorBus = new EventBus[Option[String]]
     val pickedColorSignal = pickedColorBus.events.startWith(None).map {
       case None => None
@@ -24,8 +24,9 @@ object Level:
     }
     val playerAccuracySignal = pickedColorSignal.map {
       case None => "Your accuracy: ???%"
-      case Some(color) => {
-        "Your accuracy: 100%"
+      case Some(pickedColor) => {
+        val perceivedAcc = Math.round(Color.colorCloseness(pickedColor, previewColor) * 100)
+        s"Your accuracy: ${perceivedAcc}%"
       }
     }
     div(
@@ -42,7 +43,7 @@ object Level:
             cls := "flex-1",
             p(
               cls := "text-white text-[15px] mb-2",
-              s"Required accuracy: $acc%",
+              s"Required accuracy: $requiredAcc%",
             ),
             Level.previewPane(previewColor.asInstanceOf[Color.HSL]),
           ),
