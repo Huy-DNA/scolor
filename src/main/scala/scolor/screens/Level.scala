@@ -25,7 +25,7 @@ object Level:
     )
   end previewPane
 
-  def pickPane(playerEventBus: EventBus[Option[Float]]): Element =
+  def pickPane(pickedColorBus: EventBus[Option[String]]): Element =
     val delaySignal = EventStream.delay(4000).map(_ => Some(())).startWith(None)
     var sec = 4
     val periodicSignal = EventStream.periodic(1000).map(_ => {
@@ -42,6 +42,7 @@ object Level:
       onClick --> Observer(
         onNext = _ => dom.document.querySelector(".color-picker").asInstanceOf[dom.html.Element].click()
       ),
+      onInput.mapToValue.map(Some(_)) --> pickedColorBus,
       child <-- periodicSignal.map(sec => 
         span(
           cls := "text-white",
@@ -65,6 +66,8 @@ object Level:
     val acc = rand.nextInt(35) + 40
     val playerAccuracyBus = new EventBus[Option[Float]]
     val playerAccuracySignal = playerAccuracyBus.events.startWith(None)
+    val pickedColorBus = new EventBus[Option[String]]
+    val pickedColorSignal = pickedColorBus.events.startWith(None)
     div(
       cls := "min-w-[100vw] min-h-[100vh] bg-gradient-to-r from-cyan-600 to-blue-500 p-16",
       div(
@@ -95,7 +98,7 @@ object Level:
                 ),
               ),
             ),
-            Level.pickPane(playerAccuracyBus),
+            Level.pickPane(pickedColorBus),
           ),
         ),
       ),
