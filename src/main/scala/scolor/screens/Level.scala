@@ -98,7 +98,7 @@ object Level:
         cls := "absolute opacity-0",
         cls := "color-picker",
         typ := "color",
-        disabled <-- Event.createValueTransition(startupMs, from = false, to = true),
+        disabled <-- Event.createValueTransition(startupMs, from = true, to = false),
       ),
     )
   end pickPane
