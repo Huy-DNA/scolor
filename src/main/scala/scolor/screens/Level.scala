@@ -14,7 +14,7 @@ object Level:
         case None => s"hsl($h, $s%, $l%)"
         case Some(_) => "#555555"
       },
-      cls := "bg-white drop-shadow-lg h-[100%] flex items-center justify-center",
+      cls := "bg-white drop-shadow-lg h-[30vh] lg:h-[100%] flex items-center justify-center",
       child <-- delaySignal.map {
         case None => ""
         case Some(_) => span(
@@ -34,7 +34,7 @@ object Level:
     })
     div(
       backgroundColor := "#555555",
-      cls := "bg-white drop-shadow-lg h-[100%] flex items-center justify-center",
+      cls := "bg-white drop-shadow-lg h-[30vh] lg:h-[100%] flex items-center justify-center",
       cls <-- delaySignal.map {
         case None => "text-[50px]"
         case Some(_) => "text-[20px] cursor-pointer"
@@ -74,7 +74,7 @@ object Level:
           s"Level $level",
         ),
         div(
-          cls := "flex sm:flex-col lg:flex-row sm:gap-16 lg:gap-32 mt-6 min-h-[75vh]", 
+          cls := "flex sm:flex-col lg:flex-row gap-6 lg:gap-32 mt-6 min-h-[75vh]", 
           div(
             cls := "flex-1",
             p(
@@ -86,7 +86,7 @@ object Level:
           div(
             cls := "flex-1",
             p(
-              cls := "text-white text-right text-[15px] mb-2",
+              cls := "text-white lg:text-right text-[15px] mb-2",
               span(
                 text <-- playerAccuracySignal.map(
                   maybeAccuracy => maybeAccuracy match
