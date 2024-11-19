@@ -11,18 +11,19 @@ import scolor.color.Color
 import scolor.event.Event
 
 object Level:
-  val startupTime = 4000
+  val countdownSeconds = 4
+  val startupMs = countdownSeconds * 1000
 
   def previewPane(previewColor: Color.HSL): Element =
     div(
       backgroundColor <-- Event.createValueTransition(
-        startupTime,
+        startupMs,
         from = s"hsl(${previewColor.h * 360}, ${previewColor.s * 100}%, ${previewColor.l}%)",
         to = "#555555",
       ),
       cls := "bg-white drop-shadow-lg h-[30vh] lg:h-[100%] flex items-center justify-center",
       child <-- Event.createValueTransition(
-        startupTime,
+        startupMs,
         from = "",
         to = span(
           cls := "text-white text-[50px]",
@@ -32,16 +33,11 @@ object Level:
     )
   end previewPane
 
-  def pickPane(pickedColorBus: EventBus[Option[String]]): Element =
-    var sec = 4
-    val periodicSignal = EventStream.periodic(1000).map(_ => {
-      sec = sec - 1
-      sec + 1
-    })
+  def pickPane(pickedColorBus: EventBus[Option[String]]): Element = 
     div(
       backgroundColor := "#555555",
       cls <-- Event.createValueTransition(
-        startupTime,
+        startupMs,
         from = "text-[50px]",
         to = "text-[20px] cursor-pointer",
       ).map(_ + " bg-white drop-shadow-lg h-[30vh] lg:h-[100%] flex items-center justify-center"),
@@ -49,17 +45,17 @@ object Level:
         onNext = _ => dom.document.querySelector(".color-picker").asInstanceOf[dom.html.Element].click()
       ),
       onInput.mapToValue.map(Some(_)) --> pickedColorBus,
-      child <-- periodicSignal.map(sec => 
+      child <-- Event.createPeriodicCounter(1000, 4, _ - 1).map(counter => 
         span(
           cls := "text-white",
-          if sec > 0 then s"$sec" else "Pick a color!",
+          if counter > 0 then s"${counter}" else "Pick a color!",
         )
       ),
       input(
         cls := "absolute opacity-0",
         cls := "color-picker",
         typ := "color",
-        disabled <-- Event.createValueTransition(startupTime, from = false, to = true),
+        disabled <-- Event.createValueTransition(startupMs, from = false, to = true),
       ),
     )
   end pickPane

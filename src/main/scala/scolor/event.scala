@@ -7,11 +7,12 @@ object Event:
     EventStream.delay(ms).map(_ => to).startWith(from)
   end createValueTransition
 
-  def createPeriodicCounter(ms: Int): EventStream[Int] =
-    var counter = 0
+  def createPeriodicCounter(ms: Int, initialValue: Int = 0, updater: (Int) => Int = 1 + _): EventStream[Int] =
+    var counter = initialValue
     EventStream.periodic(ms).map(_ => {
-      counter = counter + 1
-      counter - 1
+      val oldCounter = counter
+      counter = updater(counter)
+      oldCounter
     })
   end createPeriodicCounter
 
