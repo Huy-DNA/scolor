@@ -7,7 +7,7 @@ import org.scalajs.dom
 import com.raquo.laminar.api.L.{*, given}
 
 object Home:
-  def pageElement(maybeLevelBus: EventBus[Option[Int]]): Element =
+  def pageElement(enterGameBus: EventBus[Option[Unit]]): Element =
     div(
       cls := "flex items-center justify-center min-h-[100vh] bg-gradient-to-bl from-violet-500 to-fuchsia-800",
       div(
@@ -20,7 +20,7 @@ object Home:
           cls := "absolute right-0 text-white",
           button(
             "Go!",
-            onClick.mapTo(Some(1)) --> maybeLevelBus,
+            onClick.mapTo(Some(())) --> enterGameBus,
           ),
         ),
       ),
