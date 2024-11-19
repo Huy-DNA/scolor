@@ -24,7 +24,9 @@ object Level:
     }
     val playerAccuracySignal = pickedColorSignal.map {
       case None => "Your accuracy: ???%"
-      case Some(color) => "Your accuracy: 100%"
+      case Some(color) => {
+        "Your accuracy: 100%"
+      }
     }
     div(
       cls := "min-w-[100vw] min-h-[100vh] bg-gradient-to-r from-cyan-600 to-blue-500 p-16",
@@ -61,7 +63,7 @@ object Level:
     div(
       backgroundColor <-- Event.createValueTransition(
         startupMs,
-        from = s"hsl(${previewColor.h * 360}, ${previewColor.s * 100}%, ${previewColor.l}%)",
+        from = s"hsl(${previewColor.h * 360}, ${previewColor.s * 100}%, ${previewColor.l * 100}%)",
         to = "#555555",
       ),
       cls := "bg-white drop-shadow-lg h-[30vh] lg:h-[100%] flex items-center justify-center",
