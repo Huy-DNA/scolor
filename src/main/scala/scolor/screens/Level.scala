@@ -14,6 +14,50 @@ object Level:
   val countdownSeconds = 4
   val startupMs = countdownSeconds * 1000
 
+  def pageElement(level: Int, nextLevelBus: EventBus[Unit]): Element =
+    val previewColor = Color.HSL(Random.nextDouble(), Random.nextDouble, Random.nextDouble)
+    val acc = Random.nextInt(35) + 40
+    val playerAccuracyBus = new EventBus[Option[Float]]
+    val playerAccuracySignal = playerAccuracyBus.events.startWith(None)
+    val pickedColorBus = new EventBus[Option[String]]
+    val pickedColorSignal = pickedColorBus.events.startWith(None)
+    div(
+      cls := "min-w-[100vw] min-h-[100vh] bg-gradient-to-r from-cyan-600 to-blue-500 p-16",
+      div(
+        cls := "mx-auto w-[350px] md:w-[450px] lg:w-[60vw]",
+        p(
+          cls := "text-yellow-500 text-[30px] text-center",
+          s"Level $level",
+        ),
+        div(
+          cls := "flex sm:flex-col lg:flex-row gap-6 lg:gap-32 mt-6 min-h-[75vh]", 
+          div(
+            cls := "flex-1",
+            p(
+              cls := "text-white text-[15px] mb-2",
+              s"Required accuracy: $acc%",
+            ),
+            Level.previewPane(previewColor.asInstanceOf[Color.HSL]),
+          ),
+          div(
+            cls := "flex-1",
+            p(
+              cls := "text-white lg:text-right text-[15px] mb-2",
+              span(
+                text <-- playerAccuracySignal.map(
+                  maybeAccuracy => maybeAccuracy match
+                    case None => s"Your accuracy: ???%"
+                    case Some(acc) => s"Your accuracy: $acc%"
+                ),
+              ),
+            ),
+            Level.pickPane(pickedColorBus),
+          ),
+        ),
+      ),
+    )
+  end pageElement
+
   def previewPane(previewColor: Color.HSL): Element =
     div(
       backgroundColor <-- Event.createValueTransition(
@@ -59,48 +103,4 @@ object Level:
       ),
     )
   end pickPane
-
-  def pageElement(level: Int, nextLevelBus: EventBus[Unit]): Element =
-    val previewColor = Color.HSL(Random.nextDouble(), Random.nextDouble, Random.nextDouble)
-    val acc = Random.nextInt(35) + 40
-    val playerAccuracyBus = new EventBus[Option[Float]]
-    val playerAccuracySignal = playerAccuracyBus.events.startWith(None)
-    val pickedColorBus = new EventBus[Option[String]]
-    val pickedColorSignal = pickedColorBus.events.startWith(None)
-    div(
-      cls := "min-w-[100vw] min-h-[100vh] bg-gradient-to-r from-cyan-600 to-blue-500 p-16",
-      div(
-        cls := "mx-auto w-[350px] md:w-[450px] lg:w-[60vw]",
-        p(
-          cls := "text-yellow-500 text-[30px] text-center",
-          s"Level $level",
-        ),
-        div(
-          cls := "flex sm:flex-col lg:flex-row gap-6 lg:gap-32 mt-6 min-h-[75vh]", 
-          div(
-            cls := "flex-1",
-            p(
-              cls := "text-white text-[15px] mb-2",
-              s"Required accuracy: $acc%",
-            ),
-            Level.previewPane(previewColor.asInstanceOf[Color.HSL]),
-          ),
-          div(
-            cls := "flex-1",
-            p(
-              cls := "text-white lg:text-right text-[15px] mb-2",
-              span(
-                text <-- playerAccuracySignal.map(
-                  maybeAccuracy => maybeAccuracy match
-                    case None => s"Your accuracy: ???%"
-                    case Some(acc) => s"Your accuracy: $acc%"
-                ),
-              ),
-            ),
-            Level.pickPane(pickedColorBus),
-          ),
-        ),
-      ),
-    )
-  end pageElement
 end Level
