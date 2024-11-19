@@ -9,7 +9,7 @@ enum Color:
   case HSL(h: Double, s: Double, l: Double)
 
 object Color:
-  def parseRGB(hex: String): Option[Color] =
+  def parseRGB(hex: String): Option[Color.RGB] =
     val colorRegex: Regex = "^#([0-9a-fA-F]){6}$".r
     colorRegex.findFirstMatchIn(hex).map(_ => {
       val r = Integer.parseInt(hex.slice(1, 3).toLowerCase(), 16) / 256.0
@@ -19,7 +19,7 @@ object Color:
     })
   end parseRGB 
 
-  def toRGB(color: Color): Color =
+  def toRGB(color: Color): Color.RGB =
     def hueToRGB(p: Double, q: Double, t: Double): Double =
       val _t = if t < 0 then t + 1 else if t > 1 then t - 1 else t
       if _t < 1.0/6 then p + (q - p) * 6 * _t
@@ -27,7 +27,7 @@ object Color:
       else if _t < 2.0/3 then p + (q - p) * (2.0/3 - _t) * 6
       else p
     color match
-      case Color.RGB(_, _, _) => color
+      case Color.RGB(_, _, _) => color.asInstanceOf[Color.RGB]
       case Color.HSL(h, s, l) => if s == 0 then Color.RGB(l, l, l) else {
         val q = if l < 0.5 then l * (1 + s) else 1 + s - l * s
         val p = 2 * l - q
@@ -39,8 +39,8 @@ object Color:
       }
   end toRGB
 
-  def toHSL(color: Color): Color = color match
-    case Color.HSL(_, _, _) => color
+  def toHSL(color: Color): Color.HSL = color match
+    case Color.HSL(_, _, _) => color.asInstanceOf[Color.HSL]
     case Color.RGB(r, g, b) => {
       val vmax = r.max(g).max(b)
       val vmin = r.min(g).min(b)
