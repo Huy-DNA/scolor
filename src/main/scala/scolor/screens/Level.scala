@@ -8,28 +8,31 @@ import com.raquo.laminar.api.L.{*, given}
 
 import scala.util.Random
 import scolor.color.Color
+import scolor.event.Event
 
 object Level:
+  val startupTime = 4000
+
   def previewPane(previewColor: Color.HSL): Element =
-    val delaySignal = EventStream.delay(4000).map(_ => Some(())).startWith(None)
     div(
-      backgroundColor <-- delaySignal.map {
-        case None => s"hsl(${previewColor.h * 360}, ${previewColor.s * 100}%, ${previewColor.l}%)"
-        case Some(_) => "#555555"
-      },
+      backgroundColor <-- Event.createValueTransition(
+        startupTime,
+        from = s"hsl(${previewColor.h * 360}, ${previewColor.s * 100}%, ${previewColor.l}%)",
+        to = "#555555",
+      ),
       cls := "bg-white drop-shadow-lg h-[30vh] lg:h-[100%] flex items-center justify-center",
-      child <-- delaySignal.map {
-        case None => ""
-        case Some(_) => span(
+      child <-- Event.createValueTransition(
+        startupTime,
+        from = "",
+        to = span(
           cls := "text-white text-[50px]",
           "?",
-        )
-      },
+        ),
+      ),
     )
   end previewPane
 
   def pickPane(pickedColorBus: EventBus[Option[String]]): Element =
-    val delaySignal = EventStream.delay(4000).map(_ => Some(())).startWith(None)
     var sec = 4
     val periodicSignal = EventStream.periodic(1000).map(_ => {
       sec = sec - 1
@@ -37,11 +40,11 @@ object Level:
     })
     div(
       backgroundColor := "#555555",
-      cls := "bg-white drop-shadow-lg h-[30vh] lg:h-[100%] flex items-center justify-center",
-      cls <-- delaySignal.map {
-        case None => "text-[50px]"
-        case Some(_) => "text-[20px] cursor-pointer"
-      },
+      cls <-- Event.createValueTransition(
+        startupTime,
+        from = "text-[50px]",
+        to = "text-[20px] cursor-pointer",
+      ).map(_ + " bg-white drop-shadow-lg h-[30vh] lg:h-[100%] flex items-center justify-center"),
       onClick --> Observer(
         onNext = _ => dom.document.querySelector(".color-picker").asInstanceOf[dom.html.Element].click()
       ),
@@ -56,7 +59,7 @@ object Level:
         cls := "absolute opacity-0",
         cls := "color-picker",
         typ := "color",
-        disabled <-- delaySignal.map(_.isEmpty),
+        disabled <-- Event.createValueTransition(startupTime, from = false, to = true),
       ),
     )
   end pickPane
