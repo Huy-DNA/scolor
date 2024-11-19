@@ -31,6 +31,7 @@ object Main:
         enterGameBus.events.addObserver(Observer(
           onNext = _ => maybeLevelBus.writer.onNext(Some(1))
         ))
+
         Home.pageElement(enterGameBus)
       }
       case Some(level) => {
