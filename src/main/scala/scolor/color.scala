@@ -57,4 +57,31 @@ object Color:
       Color.HSL(h, s, l)
     }
   end toHSL
+
+  def colorCloseness(color1: Color, color2: Color): Double =
+    import Math._
+    val Color.HSL(h1, s1, l1) = Color.toHSL(color1)
+    val Color.HSL(h2, s2, l2) = Color.toHSL(color2)
+
+    // Normalize hue difference
+    val dH = min(abs(h2 - h1), 1.0 - abs(h2 - h1))
+    
+    // Saturation and lightness differences
+    val dS = abs(s2 - s1)
+    val dL = abs(l2 - l1)
+    
+    // Perceptual weights
+    val W_H = 1.0
+    val W_S = 0.5
+    val W_L = 0.2
+    
+    // Maximum perceptual distance
+    val maxDistance = sqrt(pow(W_H * 1.0, 2) + pow(W_S * 1.0, 2) + pow(W_L * 1.0, 2))
+    
+    // Perceptual distance
+    val distance = sqrt(pow(W_H * dH, 2) + pow(W_S * dS, 2) + pow(W_L * dL, 2))
+    
+    // Closeness as a percentage (1 = identical, 0 = max distance)
+    (1.0 - (distance / maxDistance))
+  end colorCloseness
 end Color
