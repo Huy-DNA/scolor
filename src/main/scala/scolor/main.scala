@@ -31,7 +31,14 @@ object Main:
         ))(new Owner{})
         Home.pageElement(enterGameBus)
       }
-      case Some(level) => Level.pageElement(level, maybeLevelBus)
+      case Some(level) => {
+        val nextLevelBus = new EventBus[Unit]
+        nextLevelBus.events.addObserver(Observer(
+          onNext = _ => maybeLevelBus.writer.onNext(Some(level + 1))
+        ))(new Owner{})
+
+        Level.pageElement(level, nextLevelBus)
+      }
     })
   end appElement
 end Main

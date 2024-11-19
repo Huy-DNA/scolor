@@ -60,7 +60,7 @@ object Level:
     )
   end pickPane
 
-  def pageElement(level: Int, maybeLevelBus: EventBus[Option[Int]]): Element =
+  def pageElement(level: Int, nextLevelBus: EventBus[Unit]): Element =
     val previewColor = Color.HSL(Random.nextDouble(), Random.nextDouble, Random.nextDouble)
     val acc = Random.nextInt(35) + 40
     val playerAccuracyBus = new EventBus[Option[Float]]
