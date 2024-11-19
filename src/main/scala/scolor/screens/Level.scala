@@ -17,10 +17,15 @@ object Level:
   def pageElement(level: Int, nextLevelBus: EventBus[Unit]): Element =
     val previewColor = Color.HSL(Random.nextDouble(), Random.nextDouble, Random.nextDouble)
     val acc = Random.nextInt(35) + 40
-    val playerAccuracyBus = new EventBus[Option[Float]]
-    val playerAccuracySignal = playerAccuracyBus.events.startWith(None)
     val pickedColorBus = new EventBus[Option[String]]
-    val pickedColorSignal = pickedColorBus.events.startWith(None)
+    val pickedColorSignal = pickedColorBus.events.startWith(None).map {
+      case None => None
+      case Some(s) => Color.parseRGB(s).map(Color.toHSL(_))
+    }
+    val playerAccuracySignal = pickedColorSignal.map {
+      case None => "Your accuracy: ???%"
+      case Some(color) => "Your accuracy: 100%"
+    }
     div(
       cls := "min-w-[100vw] min-h-[100vh] bg-gradient-to-r from-cyan-600 to-blue-500 p-16",
       div(
@@ -30,7 +35,7 @@ object Level:
           s"Level $level",
         ),
         div(
-          cls := "flex sm:flex-col lg:flex-row gap-6 lg:gap-32 mt-6 min-h-[75vh]", 
+          cls := "flex flex-col lg:flex-row gap-6 lg:gap-32 mt-6 min-h-[75vh]", 
           div(
             cls := "flex-1",
             p(
@@ -43,13 +48,7 @@ object Level:
             cls := "flex-1",
             p(
               cls := "text-white lg:text-right text-[15px] mb-2",
-              span(
-                text <-- playerAccuracySignal.map(
-                  maybeAccuracy => maybeAccuracy match
-                    case None => s"Your accuracy: ???%"
-                    case Some(acc) => s"Your accuracy: $acc%"
-                ),
-              ),
+              span(text <-- playerAccuracySignal),
             ),
             Level.pickPane(pickedColorBus),
           ),
