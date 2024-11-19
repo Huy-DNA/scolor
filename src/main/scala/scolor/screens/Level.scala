@@ -15,7 +15,7 @@ object Level:
   val startupMs = countdownSeconds * 1000
 
   def pageElement(level: Int, nextLevelBus: EventBus[Unit]): Element =
-    val previewColor = Color.HSL(Random.nextDouble(), Random.nextDouble, Random.nextDouble)
+    val previewColor = Color.HSL(Random.nextDouble() / 2 + 0.3, Random.nextDouble / 2 + 0.3, Random.nextDouble / 1.5 + 0.2)
     val requiredAcc = Random.nextInt(35) + 40
     val pickedColorBus = new EventBus[Option[String]]
     val pickedColorSignal = pickedColorBus.events.startWith(None).map {
@@ -81,12 +81,12 @@ object Level:
 
   def pickPane(pickedColorBus: EventBus[Option[String]]): Element = 
     div(
-      backgroundColor := "#555555",
+      backgroundColor <-- pickedColorBus.events.map(_.getOrElse("")),
       cls <-- Event.createValueTransition(
         startupMs,
         from = "text-[50px]",
         to = "text-[20px] cursor-pointer",
-      ).map(_ + " bg-white drop-shadow-lg h-[30vh] lg:h-[100%] flex items-center justify-center"),
+      ).map(_ + " bg-[#555555] drop-shadow-lg h-[30vh] lg:h-[100%] flex items-center justify-center"),
       onClick --> Observer(
         onNext = _ => dom.document.querySelector(".color-picker").asInstanceOf[dom.html.Element].click()
       ),
@@ -95,7 +95,7 @@ object Level:
         span(
           cls := "text-white",
           if counter > 0 then s"${counter}" else "Pick a color!",
-        )
+        ),
       ),
       input(
         cls := "absolute opacity-0",
