@@ -35,12 +35,17 @@ object Main:
         Home.pageElement(enterGameBus)
       }
       case Some(level) => {
-        val nextLevelBus = new EventBus[Unit]
-        nextLevelBus.events.addObserver(Observer(
+        val winBus = new EventBus[Unit]
+        winBus.events.addObserver(Observer(
           onNext = _ => maybeLevelBus.writer.onNext(Some(level + 1))
         ))
+        
+        val failBus = new EventBus[Unit]
+        failBus.events.addObserver(Observer(
+          onNext = _ => maybeLevelBus.writer.onNext(None)
+        ))
 
-        Level.pageElement(level, nextLevelBus)
+        Level.pageElement(level, winBus, failBus)
       }
     })
   end appElement
