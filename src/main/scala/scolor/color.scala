@@ -12,9 +12,9 @@ object Color:
   def parseRGB(hex: String): Option[Color.RGB] =
     val colorRegex: Regex = "^#([0-9a-fA-F]){6}$".r
     colorRegex.findFirstMatchIn(hex).map(_ => {
-      val r = Integer.parseInt(hex.slice(1, 3).toLowerCase(), 16) / 256.0
-      val g = Integer.parseInt(hex.slice(3, 5).toLowerCase(), 16) / 256.0
-      val b = Integer.parseInt(hex.slice(5, 7).toLowerCase(), 16) / 256.0
+      val r = Integer.parseInt(hex.slice(1, 3).toLowerCase(), 16) / 255.0
+      val g = Integer.parseInt(hex.slice(3, 5).toLowerCase(), 16) / 255.0
+      val b = Integer.parseInt(hex.slice(5, 7).toLowerCase(), 16) / 255.0
       Color.RGB(r, g, b)
     })
   end parseRGB 
