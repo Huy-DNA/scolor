@@ -29,7 +29,7 @@ object Color:
     color match
       case Color.RGB(_, _, _) => color.asInstanceOf[Color.RGB]
       case Color.HSL(h, s, l) => if s == 0 then Color.RGB(l, l, l) else {
-        val q = if l < 0.5 then l * (1 + s) else 1 + s - l * s
+        val q = if l < 0.5 then l * (1 + s) else l + s - l * s
         val p = 2 * l - q
         Color.RGB(
           hueToRGB(p, q, h + 1.0/3),
