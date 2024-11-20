@@ -42,7 +42,7 @@ object Main:
         
         val failBus = new EventBus[Unit]
         failBus.events.addObserver(Observer(
-          onNext = _ => maybeLevelBus.writer.onNext(None)
+          onNext = _ => maybeLevelBus.writer.onNext(Some(level + 1))
         ))
 
         Level.pageElement(level, winBus, failBus)

@@ -14,7 +14,7 @@ object Level:
   val countdownSeconds = 4
   val startupMs = countdownSeconds * 1000
 
-  def pageElement(level: Int, winBus: EventBus[Unit], loseBus: EventBus[Unit]): Element =
+  def pageElement(level: Int, winBus: EventBus[Unit], failBus: EventBus[Unit]): Element =
     val previewColor = Color.HSL(Random.nextDouble() / 2 + 0.3, Random.nextDouble / 2 + 0.3, Random.nextDouble / 1.5 + 0.2)
     val requiredAcc = Random.nextInt(35) + 40
 
