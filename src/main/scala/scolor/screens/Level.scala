@@ -27,8 +27,6 @@ object Level:
 
     val playerAccuracySignal = pickedColorSignal.map { _.map(pickedColor => Math.round(Color.colorCloseness(pickedColor, previewColor) * 100)) }
 
-    val scoreViewSignal = pickedColorSignal.map { !_.isEmpty }
-
     playerAccuracySignal.addObserver(Observer(
       onNext = {
         case None => None
@@ -58,9 +56,9 @@ object Level:
               cls := "text-white text-[15px] mb-2",
               s"Required accuracy: $requiredAcc%",
             ),
-            child <-- scoreViewSignal.map {
-              case false => Level.previewPane(previewColor.asInstanceOf[Color.HSL])
-              case true => Level.plainPane(previewColor.asInstanceOf[Color.HSL])
+            child <-- pickedColorSignal.map {
+              case None => Level.previewPane(previewColor.asInstanceOf[Color.HSL])
+              case Some(_) => Level.plainPane(previewColor.asInstanceOf[Color.HSL])
             },
           ),
           div(
@@ -73,9 +71,9 @@ object Level:
                 "%",
               ),
             ),
-            child <-- scoreViewSignal.map {
-              case false => Level.pickPane(pickedColorBus)
-              case true => Level.plainPane(previewColor.asInstanceOf[Color.HSL])
+            child <-- pickedColorSignal.map {
+              case None => Level.pickPane(pickedColorBus)
+              case Some(pickedColor) => Level.plainPane(pickedColor.asInstanceOf[Color.HSL])
             },
           ),
         ),
