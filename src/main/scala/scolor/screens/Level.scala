@@ -13,6 +13,7 @@ import scolor.event.Event
 object Level:
   val countdownSeconds = 4
   val startupMs = countdownSeconds * 1000
+  val scorePreviewMs = 3000
 
   def pageElement(level: Int, winBus: EventBus[Unit], failBus: EventBus[Unit]): Element =
     val previewColor = Color.HSL(Random.nextDouble() / 2 + 0.3, Random.nextDouble / 2 + 0.3, Random.nextDouble / 1.5 + 0.2)
@@ -25,6 +26,21 @@ object Level:
     }
 
     val playerAccuracySignal = pickedColorSignal.map { _.map(pickedColor => Math.round(Color.colorCloseness(pickedColor, previewColor) * 100)) }
+
+    val scoreViewSignal = pickedColorSignal.map { !_.isEmpty }
+
+    playerAccuracySignal.addObserver(Observer(
+      onNext = {
+        case None => None
+        case Some(acc) => scala.scalajs.js.timers.setTimeout (scorePreviewMs) {
+          if acc >= requiredAcc then
+            winBus.writer.onNext(Some(()))
+          else
+            failBus.writer.onNext(Some(()))
+          ()
+        }
+      }
+    ))(new Owner{})
 
     div(
       cls := "min-w-[100vw] min-h-[100vh] bg-gradient-to-r from-cyan-600 to-blue-500 p-16",
@@ -42,7 +58,10 @@ object Level:
               cls := "text-white text-[15px] mb-2",
               s"Required accuracy: $requiredAcc%",
             ),
-            Level.previewPane(previewColor.asInstanceOf[Color.HSL]),
+            child <-- scoreViewSignal.map {
+              case false => Level.previewPane(previewColor.asInstanceOf[Color.HSL])
+              case true => Level.plainPane(previewColor.asInstanceOf[Color.HSL])
+            },
           ),
           div(
             cls := "flex-1",
@@ -54,12 +73,21 @@ object Level:
                 "%",
               ),
             ),
-            Level.pickPane(pickedColorBus),
+            child <-- scoreViewSignal.map {
+              case false => Level.pickPane(pickedColorBus)
+              case true => Level.plainPane(previewColor.asInstanceOf[Color.HSL])
+            },
           ),
         ),
       ),
     )
   end pageElement
+
+  def plainPane(color: Color.HSL): Element =
+    div(
+      backgroundColor := s"hsl(${color.h * 360}, ${color.s * 100}%, ${color.l * 100}%)",
+      cls := "bg-white drop-shadow-lg h-[30vh] lg:h-[100%] flex items-center justify-center",
+    )
 
   def previewPane(previewColor: Color.HSL): Element =
     div(
