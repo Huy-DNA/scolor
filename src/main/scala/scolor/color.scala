@@ -84,10 +84,10 @@ object Color:
     import Math._
     val Color.YUV(y1, u1, v1) = Color.toYUV(color1)
     val Color.YUV(y2, u2, v2) = Color.toYUV(color2)
-    sqrt(
+    1 - sqrt(
       pow(y2 - y1, 2) + 
       pow(u2 - u1, 2) + 
       pow(v2 - v1, 2)
-    )
+    ) / sqrt(3)
   end colorCloseness
 end Color
